@@ -1,80 +1,13 @@
 #include "Http.h"
 
-#include <winsock2.h>
-#include <ws2tcpip.h>
 #include <stdio.h>
 
-#define IPv4_ANY "0.0.0.0"
-#define IPv6_ANY "::"
-#define DEFAULT_PORT "80"
 #define BUFFERLEN_DEFAULT 512
 
 int main(int argc, char* argv) {
-	int iResult; //Variable to hold the results of the C-Style functions
-
 	//Start up WinSock
-	WSADATA wsaData;
-
-	iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
-	if (iResult != 0) {
-		printf("WSAStartup failed: %d\n", iResult);
-		return 1;
-	}
-
-	//Create the listen socket
-	addrinfo *result = nullptr, hints;
-	SOCKET listenSocket = INVALID_SOCKET;
-
-	ZeroMemory(&hints, sizeof(hints));
-	hints.ai_family = AF_INET6;			//IPv6, we'll enable ipv4 connections later
-	hints.ai_socktype = SOCK_STREAM;	//Stream socket
-	hints.ai_protocol = IPPROTO_TCP;	//TCP
-	hints.ai_flags = AI_PASSIVE;		//We're gona listen on this server
-
-	iResult = getaddrinfo(IPv6_ANY, DEFAULT_PORT, &hints, &result);
-	if (iResult != 0) {
-		printf("getaddrinfo failed: %d\n", iResult);
-		return 1;
-	}
-
-	listenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-	if (listenSocket == INVALID_SOCKET) {
-		printf("socket failed: %ld\n", WSAGetLastError());
-		freeaddrinfo(result);
-		return 1;
-	}
-
-	//Enable ipv4 mapping for this socket
-	int no = 0;
-	iResult = setsockopt(listenSocket, IPPROTO_IPV6, IPV6_V6ONLY, (char *) &no, sizeof(no));
-	if (iResult == SOCKET_ERROR) {
-		printf("setsockopt failed: %d\n", WSAGetLastError());
-		freeaddrinfo(result);
-		closesocket(listenSocket);
-		WSACleanup();
-		return 1;
-	}
-
-	//Bind the socket
-	iResult = bind(listenSocket, result->ai_addr, (int)result->ai_addrlen);
-	if (iResult == SOCKET_ERROR) {
-		printf("bind failed: %d\n", WSAGetLastError());
-		freeaddrinfo(result);
-		closesocket(listenSocket);
-		WSACleanup();
-		return 1;
-	}
-
-	//No longer need addrinfo, the socket is created
-	freeaddrinfo(result);
 
 	//Listen on this socket
-	if (listen(listenSocket, SOMAXCONN) == SOCKET_ERROR) {
-		printf("listen failed: %ld\n", WSAGetLastError());
-		closesocket(listenSocket);
-		WSACleanup();
-		return 1;
-	}
 
 	//Buffers for writing/recieving
 	char recieveBuffer[BUFFERLEN_DEFAULT] = {};
