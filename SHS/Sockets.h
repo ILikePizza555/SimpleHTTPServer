@@ -4,6 +4,7 @@
 #include <ws2tcpip.h>
 #include <exception>
 #include <string>
+#include <vector>
 
 #define IPv4_ANY "0.0.0.0"
 #define IPv6_ANY "::"
@@ -47,18 +48,21 @@ namespace sockets {
 
 		private:
 		SOCKET clientSocket;
+		bool closed;
 
-		char* writeBuffer;
-		int writeBufferLength;
-
-		char* recieveBuffer;
-		int recieveBufferLength;
-
-		ClientConnection(SOCKET& cs, int writeBuffer, int recieveBuffer);
+		ClientConnection(SOCKET& cs);
 
 		public:
-		void write(char[] data);
-		char* read();
+		std::vector<char> writeBuffer;
+		std::vector<char> readBuffer;
+
+		bool isClosed();
+
+		void send();
+		void send(int amount);
+		void read(size_t amount = DEFAULT_BUFFER_SIZE);
+		void close();
+		void shutdown();
 	};
 
 	void init() {

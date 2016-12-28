@@ -22,7 +22,7 @@ sockets::ServerSocket::ServerSocket(std::string ip, std::string port) : ip(ip), 
 
 	//Enable ipv4 mapping on the socket
 	int no = 0;
-	if ((iResult = setsockopt(listenSocket, IPPROTO_IPV6, IPV6_V6ONLY, (char *)&no, sizeof(no));) == SOCKET_ERROR)
+	if ((iResult = setsockopt(listenSocket, IPPROTO_IPV6, IPV6_V6ONLY, (char *)&no, sizeof(no))) == SOCKET_ERROR)
 		throw SocketException("Error on setsockopt. Error: ", WSAGetLastError());
 
 	//Bind the socket
@@ -46,6 +46,6 @@ sockets::ClientConnection sockets::ServerSocket::accept(int bufferSize = DEFAULT
 
 	if ((clientSocket = ::accept(listenSocket, NULL, NULL)) == INVALID_SOCKET) throw SocketException("Error on accept. Error: ", WSAGetLastError());
 
-	sockets::ClientConnection rv(clientSocket, bufferSize, bufferSize);
+	sockets::ClientConnection rv(clientSocket);
 	return rv;
 }
