@@ -4,15 +4,15 @@
 #include <ws2tcpip.h>
 #include <exception>
 #include <string>
-#include <vector>
+
+#include "Buffer.h"
 
 #define IPv4_ANY "0.0.0.0"
 #define IPv6_ANY "::"
 #define DEFAULT_PORT "80"
-#define DEFAULT_BUFFER_SIZE 1024
+#define DEFAULT_BUFFER_SIZE 2048
 
 namespace sockets {
-
 	class SocketException : std::exception {
 		public:
 		std::string message;
@@ -32,18 +32,20 @@ namespace sockets {
 		SOCKET clientSocket;
 		bool closed;
 
-		ClientConnection(SOCKET& cs);
+		ClientConnection(SOCKET& cs, size_t bufferSize);
 
 		public:
-		std::vector<char> writeBuffer;
-		std::vector<char> readBuffer;
+		Buffer buffer;
 
 		bool isClosed();
 
+		//Sends the data in writebuffer 
 		void send();
-		void send(int amount);
-		void read(size_t amount = DEFAULT_BUFFER_SIZE);
+		//Reads data into readbuffer
+		void read();
+		//Closes the sockets
 		void close();
+		//Tells the client that the connection is closing, and closes the socket
 		void shutdown();
 	};
 
@@ -59,8 +61,10 @@ namespace sockets {
 
 		~ServerSocket();
 
+		//Enables listening for connections
 		void listen(int backlog = SOMAXCONN);
-		ClientConnection accept(int bufferSize = DEFAULT_BUFFER_SIZE);
+		//Accepts a connection, and returns an object representing the connection (blocks until a connection is established)
+		ClientConnection accept(size_t bufferSize = DEFAULT_BUFFER_SIZE);
 
 	};
 

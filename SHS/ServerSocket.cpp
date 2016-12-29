@@ -41,11 +41,11 @@ void sockets::ServerSocket::listen(int backlog) {
 	if (::listen(listenSocket, backlog) == SOCKET_ERROR) throw SocketException("Error on listen. Error: ", WSAGetLastError());
 }
 
-sockets::ClientConnection sockets::ServerSocket::accept(int bufferSize) {
+sockets::ClientConnection sockets::ServerSocket::accept(size_t bufferSize) {
 	SOCKET clientSocket = INVALID_SOCKET;
 
 	if ((clientSocket = ::accept(listenSocket, NULL, NULL)) == INVALID_SOCKET) throw SocketException("Error on accept. Error: ", WSAGetLastError());
 
-	sockets::ClientConnection rv(clientSocket);
+	sockets::ClientConnection rv(clientSocket, bufferSize);
 	return rv;
 }

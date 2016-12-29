@@ -1,8 +1,6 @@
 #include "Sockets.h"
 
-sockets::ClientConnection::ClientConnection(SOCKET& cs) : clientSocket(cs), closed(false), writeBuffer(std::vector<char>()), readBuffer(std::vector<char>()) {
-
-}
+sockets::ClientConnection::ClientConnection(SOCKET& cs, size_t bufferSize) : clientSocket(cs), closed(false), buffer(bufferSize) {}
 
 void sockets::ClientConnection::close() {
 	closed = true;
@@ -10,13 +8,12 @@ void sockets::ClientConnection::close() {
 	return;
 }
 
-void sockets::ClientConnection::read(size_t amount) {
+void sockets::ClientConnection::read() {
 	//Check if the connection is closed
 	if(closed) throw SocketException("Error - connection has been closed. ", -1);
 	
-	//Reserve space for reading
-	readBuffer.reserve(amount);
-	int iResult = recv(clientSocket, readBuffer.data(), readBuffer.capacity(), 0);
+	//Read the socket
+	int iResult = recv(clientSocket, buffer.data(), buffer.getLength(), 0);
 
 	//Check results
 	if (iResult > 0) return;
@@ -28,13 +25,9 @@ void sockets::ClientConnection::read(size_t amount) {
 }
 
 void sockets::ClientConnection::send() {
-	send(writeBuffer.capacity());
-}
-
-void sockets::ClientConnection::send(int amount) {
 	if (closed) throw SocketException("Error - connection has been closed. ", -1);
 
-	int iResult = ::send(clientSocket, writeBuffer.data(), amount, 0);
+	int iResult = ::send(clientSocket, buffer.data(), buffer.getLength(), 0);
 
 	if(iResult == SOCKET_ERROR) throw SocketException("Error on send. Error: ", WSAGetLastError());
 }

@@ -118,12 +118,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="ClientConnection.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ServerSocket.cpp" />
     <ClCompile Include="Sockets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Buffer.h" />
     <ClInclude Include="Sockets.h" />
     <ClInclude Include="string_utils.h" />
   </ItemGroup>
