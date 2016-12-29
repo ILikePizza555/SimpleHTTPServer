@@ -121,6 +121,7 @@
     <ClCompile Include="ClientConnection.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ServerSocket.cpp" />
+    <ClCompile Include="Sockets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sockets.h" />

@@ -37,11 +37,11 @@ sockets::ServerSocket::~ServerSocket() {
 	closesocket(listenSocket);
 }
 
-void sockets::ServerSocket::listen(int backlog = SOMAXCONN) {
+void sockets::ServerSocket::listen(int backlog) {
 	if (::listen(listenSocket, backlog) == SOCKET_ERROR) throw SocketException("Error on listen. Error: ", WSAGetLastError());
 }
 
-sockets::ClientConnection sockets::ServerSocket::accept(int bufferSize = DEFAULT_BUFFER_SIZE) {
+sockets::ClientConnection sockets::ServerSocket::accept(int bufferSize) {
 	SOCKET clientSocket = INVALID_SOCKET;
 
 	if ((clientSocket = ::accept(listenSocket, NULL, NULL)) == INVALID_SOCKET) throw SocketException("Error on accept. Error: ", WSAGetLastError());

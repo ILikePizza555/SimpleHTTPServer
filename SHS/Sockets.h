@@ -12,7 +12,6 @@
 #define DEFAULT_BUFFER_SIZE 1024
 
 namespace sockets {
-	WSADATA wsaData;
 
 	class SocketException : std::exception {
 		public:
@@ -24,23 +23,6 @@ namespace sockets {
 		const char* what() const override {
 			return message.c_str();
 		}
-	};
-
-	class ServerSocket {
-		private:
-		std::string ip;
-		std::string port;
-
-		SOCKET listenSocket;
-
-		public:
-		ServerSocket(std::string ip, std::string port);
-
-		~ServerSocket();
-
-		void listen(int backlog = SOMAXCONN);
-		ClientConnection accept(int bufferSize = DEFAULT_BUFFER_SIZE);
-
 	};
 
 	class ClientConnection {
@@ -65,8 +47,22 @@ namespace sockets {
 		void shutdown();
 	};
 
-	void init() {
-		int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-		if (iResult != 0) throw SocketException("Error on WSAStartup. Error: ", iResult);
-	}
+	class ServerSocket {
+	private:
+		std::string ip;
+		std::string port;
+
+		SOCKET listenSocket;
+
+	public:
+		ServerSocket(std::string ip = IPv6_ANY, std::string port = DEFAULT_PORT);
+
+		~ServerSocket();
+
+		void listen(int backlog = SOMAXCONN);
+		ClientConnection accept(int bufferSize = DEFAULT_BUFFER_SIZE);
+
+	};
+
+	WSAData init();
 }

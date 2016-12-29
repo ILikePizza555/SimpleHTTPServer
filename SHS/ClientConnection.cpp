@@ -10,12 +10,15 @@ void sockets::ClientConnection::close() {
 	return;
 }
 
-void sockets::ClientConnection::read(size_t amount = DEFAULT_BUFFER_SIZE) {
+void sockets::ClientConnection::read(size_t amount) {
+	//Check if the connection is closed
 	if(closed) throw SocketException("Error - connection has been closed. ", -1);
 	
+	//Reserve space for reading
 	readBuffer.reserve(amount);
 	int iResult = recv(clientSocket, readBuffer.data(), readBuffer.capacity(), 0);
 
+	//Check results
 	if (iResult > 0) return;
 	else if (iResult == 0) { 
 		close();
