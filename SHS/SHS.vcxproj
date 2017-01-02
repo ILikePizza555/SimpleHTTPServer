@@ -123,9 +123,11 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ServerSocket.cpp" />
     <ClCompile Include="Sockets.cpp" />
+    <ClCompile Include="string_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h" />
+    <ClInclude Include="Http.h" />
     <ClInclude Include="Sockets.h" />
     <ClInclude Include="string_utils.h" />
   </ItemGroup>

@@ -1,4 +1,5 @@
 #include "Sockets.h"
+#include "string_utils.h"
 
 #include <stdio.h>
 #include <string>
@@ -11,7 +12,6 @@ int main(int argc, char* argv) {
 	auto server = sockets::ServerSocket();
 	bool stop = false;
 	static const std::string http = "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\nServer: Rainbow Dash/0.1 (20% Cooler) (Windows)\r\nConnection:close\r\n\r\n<h1>404 - Not Found</h1>";
-
 
 	//Networking loop
 	while (!stop) {
