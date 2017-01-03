@@ -11,7 +11,18 @@ int main(int argc, char* argv) {
 
 	auto server = sockets::ServerSocket();
 	bool stop = false;
-	static const std::string http = "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\nServer: Rainbow Dash/0.1 (20% Cooler) (Windows)\r\nConnection:close\r\n\r\n<h1>404 - Not Found</h1>";
+
+	const Http::HttpResponse resp {
+		"HTTP/1.1",
+		404,
+		"Not Found",
+		{
+			{"Content-Type", "text/html" },
+			{"Server", SERVER_NAME }, 
+			{"Connection", "close"}
+		},
+		"<h1>404 - Not Found</h1>"
+	 };
 
 	//Networking loop
 	while (!stop) {
@@ -29,7 +40,7 @@ int main(int argc, char* argv) {
 
 				//Populate the buffer
 				client.buffer.clear();
-				client.buffer.assign(http);
+				client.buffer.assign(Http::buildHttpResponse(resp));
 
 				//Send it over
 				client.send();

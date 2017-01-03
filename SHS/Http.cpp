@@ -38,3 +38,21 @@ Http::HttpRequest Http::parseHttpRequest(std::string httpString) {
 
 	return rv;
 }
+
+std::string Http::buildHttpResponse(Http::HttpResponse response) {
+	std::ostringstream rv;
+
+	//Header line
+	rv << response.version << " " << response.statusCode << " " << response.reason << CRLF;
+
+	//HTTP headers
+	for (auto& iter : response.headers) rv << iter.first << ":" << iter.second << CRLF;
+
+	//Empty line
+	rv << CRLF;
+
+	//Body
+	rv << response.body;
+
+	return rv.str();
+}
