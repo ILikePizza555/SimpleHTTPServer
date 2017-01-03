@@ -120,6 +120,7 @@
   <ItemGroup>
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="ClientConnection.cpp" />
+    <ClCompile Include="Http.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ServerSocket.cpp" />
     <ClCompile Include="Sockets.cpp" />
@@ -128,6 +129,7 @@
   <ItemGroup>
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Http.h" />
+    <ClInclude Include="HttpError.h" />
     <ClInclude Include="Sockets.h" />
     <ClInclude Include="string_utils.h" />
   </ItemGroup>

@@ -1,5 +1,5 @@
 #include "Sockets.h"
-#include "string_utils.h"
+#include "Http.h"
 
 #include <stdio.h>
 #include <string>
@@ -25,6 +25,7 @@ int main(int argc, char* argv) {
 			while (!client.isClosed()) {
 				client.read();
 				printf(client.buffer.data());
+				Http::HttpRequest req = Http::parseHttpRequest(client.buffer.data());
 
 				//Populate the buffer
 				client.buffer.clear();

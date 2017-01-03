@@ -16,38 +16,53 @@
     <Filter Include="Header Files\Http">
       <UniqueIdentifier>{4a839042-25f3-4242-94cb-93c364645f22}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Sockets">
+      <UniqueIdentifier>{fd1e90ef-1bf7-4041-b916-307e8291fcb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Sockets">
+      <UniqueIdentifier>{da96a29c-4122-4d69-9aea-881361361a7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Http">
+      <UniqueIdentifier>{24a68a7f-5418-42fc-b23e-5c4aa776d9a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ServerSocket.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ClientConnection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sockets.cpp">
+    <ClCompile Include="string_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Buffer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Sockets</Filter>
     </ClCompile>
-    <ClCompile Include="string_utils.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ClientConnection.cpp">
+      <Filter>Source Files\Sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerSocket.cpp">
+      <Filter>Source Files\Sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="Sockets.cpp">
+      <Filter>Source Files\Sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="Http.cpp">
+      <Filter>Source Files\Http</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="string_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sockets.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Http.h">
+      <Filter>Header Files\Http</Filter>
     </ClInclude>
     <ClInclude Include="Buffer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Sockets</Filter>
     </ClInclude>
-    <ClInclude Include="Http.h">
+    <ClInclude Include="Sockets.h">
+      <Filter>Header Files\Sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpError.h">
       <Filter>Header Files\Http</Filter>
     </ClInclude>
   </ItemGroup>
