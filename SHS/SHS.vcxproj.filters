@@ -48,6 +48,9 @@
     <ClCompile Include="Http.cpp">
       <Filter>Source Files\Http</Filter>
     </ClCompile>
+    <ClCompile Include="HttpServer.cpp">
+      <Filter>Source Files\Http</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="string_utils.h">
@@ -63,6 +66,9 @@
       <Filter>Header Files\Sockets</Filter>
     </ClInclude>
     <ClInclude Include="HttpError.h">
+      <Filter>Header Files\Http</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpServer.h">
       <Filter>Header Files\Http</Filter>
     </ClInclude>
   </ItemGroup>
