@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <vector>
 #include <thread>
 #include <queue>
@@ -17,9 +18,13 @@ namespace Http {
 			std::vector<std::thread> threadpool;
 
 			std::queue<sockets::ClientConnection> clientQueue;
-			std::mutex clientQueue;
+			std::timed_mutex clientQueueMutex;
 
 			bool stopped = false;
+
+		protected:
+			void threadNetworkHandler();
+			HttpResponse httpRequestHandler(HttpRequest req);
 
 		public:
 			HttpServer(int threadCount = 100);
@@ -29,8 +34,4 @@ namespace Http {
 
 			bool isStopped();
 	};
-
-	HttpResponse httpRequestHandler(HttpRequest);
-
-	void threadNetworkHandler(std::deque<sockets::ClientConnection>& clientQueue, std::mutex& clientQueue);
 }

@@ -36,6 +36,10 @@ bool sockets::ClientConnection::isClosed() {
 	return closed;
 }
 
+std::string sockets::ClientConnection::getIp() {
+	std::string rv()
+}
+
 void sockets::ClientConnection::shutdown() {
 	if(closed) return;
 
