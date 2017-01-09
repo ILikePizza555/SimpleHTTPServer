@@ -1,6 +1,6 @@
 #include "Sockets.h"
 
-sockets::ClientConnection::ClientConnection(SOCKET& cs, size_t bufferSize) : clientSocket(cs), closed(false), buffer(bufferSize) {}
+sockets::ClientConnection::ClientConnection(SOCKET& cs, sockaddr_storage addr, socklen_t len, size_t bufferSize) : clientSocket(cs), addr(addr), len(len), closed(false), buffer(bufferSize) {}
 
 void sockets::ClientConnection::close() {
 	closed = true;
@@ -37,7 +37,20 @@ bool sockets::ClientConnection::isClosed() {
 }
 
 std::string sockets::ClientConnection::getIp() {
-	std::string rv()
+	char ipstr[INET6_ADDRSTRLEN];
+
+	if (addr.ss_family == AF_INET) {
+		//IPv4
+		sockaddr_in *s = (sockaddr_in*)&addr;
+		inet_ntop(AF_INET, &s->sin_addr, ipstr, sizeof ipstr);
+	}
+	else {
+		//IPv6
+		sockaddr_in6 *s = (sockaddr_in6 *)&addr;
+		inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
+	}
+
+	return std::string(ipstr);
 }
 
 void sockets::ClientConnection::shutdown() {

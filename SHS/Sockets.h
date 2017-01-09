@@ -30,14 +30,18 @@ namespace sockets {
 
 		private:
 		SOCKET clientSocket;
+		sockaddr_storage addr;
+		socklen_t len;
+
 		bool closed;
 
-		ClientConnection(SOCKET& cs, size_t bufferSize);
+		ClientConnection(SOCKET& cs, sockaddr_storage addr, socklen_t len, size_t bufferSize);
 
 		public:
 		Buffer buffer;
 
 		bool isClosed();
+		std::string getIp();
 
 		//Sends the data in writebuffer 
 		void send();

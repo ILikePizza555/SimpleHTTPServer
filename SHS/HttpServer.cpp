@@ -19,7 +19,7 @@ void Http::HttpServer::start() {
 		threadpool[i].detach();
 	}
 
-	printf("Listening for connections...\n");
+	std::cout << "Listening for connections..." << std::endl;
 	while (!stopped) {
 		server.listen();
 
@@ -31,7 +31,7 @@ void Http::HttpServer::start() {
 			std::lock_guard<std::timed_mutex> lock(clientQueueMutex);
 			clientQueue.push(std::move(client));
 		} catch (sockets::SocketException e) {
-			printf(e.what());
+			std::cout << e.what() << std::endl;
 		}
 	}
 }
@@ -51,7 +51,7 @@ void Http::HttpServer::threadNetworkHandler() {
 		sockets::ClientConnection client = std::move(clientQueue.front());
 		clientQueue.pop();
 
-		printf("[%d] handling connection ", std::this_thread::get_id())
+		std::cout << "[" << std::this_thread::get_id() << "] handling connection for " << client.getIp() << std::endl;
 
 		//We don't need the queue anymore
 		lock.unlock();

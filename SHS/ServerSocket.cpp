@@ -43,9 +43,11 @@ void sockets::ServerSocket::listen(int backlog) {
 
 sockets::ClientConnection sockets::ServerSocket::accept(size_t bufferSize) {
 	SOCKET clientSocket = INVALID_SOCKET;
+	sockaddr_storage addr;
+	socklen_t len = sizeof addr;
 
-	if ((clientSocket = ::accept(listenSocket, NULL, NULL)) == INVALID_SOCKET) throw SocketException("Error on accept. Error: ", WSAGetLastError());
+	if ((clientSocket = ::accept(listenSocket, (sockaddr*)&addr, &len)) == INVALID_SOCKET) throw SocketException("Error on accept. Error: ", WSAGetLastError());
 
-	sockets::ClientConnection rv(clientSocket, bufferSize);
+	sockets::ClientConnection rv(clientSocket, addr, len, bufferSize);
 	return rv;
 }
