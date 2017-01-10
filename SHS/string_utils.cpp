@@ -24,8 +24,10 @@ std::vector<std::string> utils::split(std::string string, std::string delim, int
 
 std::string utils::concat(std::initializer_list<std::string> args, std::string delim, int beginOffset, int endOffset) {
 	std::ostringstream os;
+	//Std::copy expects a pointer to 1 past the last element of an array. So, by subtracting one here, it copies all but the last.
 	std::copy(args.begin() + beginOffset, args.end() - endOffset, std::ostream_iterator<std::string>(os, delim.c_str()));
-	os << *(args.end());
+	//args.end() returns a pointer to 1 past the last element of an array. So, we need to subtract one.
+	os << *(args.end() - 1);
 
 	return os.str();
 }

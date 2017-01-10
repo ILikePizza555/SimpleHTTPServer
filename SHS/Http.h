@@ -8,8 +8,12 @@
 #include <string>
 #include <exception>
 
-#define SERVER_NAME "SHS(Rainbow Dash)/0.1"
+#define SERVER_NAME "SHS/0.1 - RainbowDash"
 #define CRLF "\r\n"
+
+#define HTTP_VERSION "HTTP/1.1"
+
+#define CT_HTML "text/html"
 
 namespace Http {
 	enum METHOD {
@@ -47,6 +51,9 @@ namespace Http {
 	METHOD getMethod(std::string str);
 
 	HttpRequest parseHttpRequest(std::string httpString);
+	std::string serializeHttpResponse(HttpResponse);
 
-	std::string buildHttpResponse(HttpResponse);
+	std::string defaultHtml(std::string title, std::string header, std::string message);
+
+	HttpResponse buildError(int statusCode, std::string reason, std::string html);
 }

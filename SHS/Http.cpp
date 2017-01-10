@@ -23,23 +23,35 @@ Http::HttpRequest Http::parseHttpRequest(std::string httpString) {
 	rv.method = getMethod(request[0]);
 	rv.path = request[1];
 	//Sometimes the version isn't included. That's OK.
-	(request.size() == 3) ? rv.version = request[2] : rv.version = "HTTP/1.1";
+	if (request.size() == 3) {
+		rv.version = request[2];
 
-	//Parse the headers
-	int header_end = std::find_if(lines.begin() + 1, lines.end(), [](std::string& s) {return s.empty();}) - lines.begin();
-	for(int i = 1; i < header_end; i++) {
-		auto line = utils::split(lines[i], ":", 1);
-		utils::trim(line[0]);
-		utils::trim(line[1]);
-		rv.headers.insert(std::make_pair(line[0], line[1]));
+		//Need to ensure that the version string is valid
+		if (rv.version != "HTTP/1.1" && rv.version != "HTTP/1.0") {
+			throw RequestError(utils::concat({ "Supplied version \"", rv.version, "\" is not a valid HTTP version." }));
+		}
+	} else  {
+		rv.version = "HTTP/1.1";
 	}
 
-	rv.body = utils::concat(lines, "", header_end);
+	//Sometimes requests can be only one line. Check to see if we need to parse headers and a body.
+	if (lines.size() > 1) {
+		//Parse the headers
+		int header_end = std::find_if(lines.begin() + 1, lines.end(), [](std::string& s) {return s.empty();}) - lines.begin();
+		for(int i = 1; i < header_end; i++) {
+			auto line = utils::split(lines[i], ":", 1);
+			utils::trim(line[0]);
+			utils::trim(line[1]);
+			rv.headers.insert(std::make_pair(line[0], line[1]));
+		}
+
+		rv.body = utils::concat(lines, "", header_end);
+	}
 
 	return rv;
 }
 
-std::string Http::buildHttpResponse(Http::HttpResponse response) {
+std::string Http::serializeHttpResponse(Http::HttpResponse response) {
 	std::ostringstream rv;
 
 	//Header line
@@ -55,4 +67,31 @@ std::string Http::buildHttpResponse(Http::HttpResponse response) {
 	rv << response.body;
 
 	return rv.str();
+}
+
+std::string Http::defaultHtml(std::string title, std::string header, std::string message) {
+	return utils::concat({  "<html><head><title>", 
+							title, 
+							"</title></head><body><h1>", 
+							header, 
+							"</h1><p>",
+							message,
+							"</p><hr/><sup><i>",
+							SERVER_NAME,
+							"</i></sup></body></html>"});
+}
+
+Http::HttpResponse Http::buildError(int statusCode, std::string reason, std::string html) {
+	HttpResponse rv {
+		HTTP_VERSION,
+		statusCode,
+		reason,
+		{
+			{ "Content-Type", CT_HTML },
+			{ "Server", SERVER_NAME },
+			{ "Connection", "close" }
+		},
+		html
+	};
+	return rv;
 }

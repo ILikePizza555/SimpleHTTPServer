@@ -5,17 +5,20 @@
 
 namespace Http {
 	class HttpError : public std::exception {
-		const char* message;
+		std::string message;
 
 	public:
-		HttpError(const char* message) : message(message) {}
-		HttpError(std::string message) : message(message.c_str()) {}
+		HttpError(std::string message) : message(message) {}
 		const char* what() const override {
-			return message;
+			return message.c_str();
 		}
 	};
 
 	class MethodError : public HttpError {
+		using HttpError::HttpError;
+	};
+
+	class RequestError : public HttpError {
 		using HttpError::HttpError;
 	};
 }

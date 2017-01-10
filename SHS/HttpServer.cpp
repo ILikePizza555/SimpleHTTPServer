@@ -59,15 +59,26 @@ void Http::HttpServer::threadNetworkHandler() {
 		while (!client.isClosed()) {
 			//Read the client data
 			client.read();
-			Http::HttpRequest req = Http::parseHttpRequest(client.buffer.data());
 
-			Http::HttpResponse res = httpRequestHandler(req);
+			try {
+				Http::HttpRequest req = Http::parseHttpRequest(client.buffer.data());
 
-			//Send the server data
-			client.buffer.clear();
-			client.buffer.assign(Http::buildHttpResponse(res));
+				Http::HttpResponse res = httpRequestHandler(req);
+
+				//Send the server data
+				client.buffer.clear();
+				client.buffer.assign(Http::serializeHttpResponse(res));
+			} catch (Http::RequestError e) {
+				Http::HttpResponse res = buildError(400, "Bad Request", defaultHtml("400 - Bad Request", "400 - Bad Request", e.what()));
+				client.buffer.clear();
+				client.buffer.assign(Http::serializeHttpResponse(res));
+			} catch (Http::HttpError e ) {
+				Http::HttpResponse res = buildError(500, "Server Error", defaultHtml("500 - Server Error", "500 - Internal Server Error", e.what()));
+				client.buffer.clear();
+				client.buffer.assign(Http::serializeHttpResponse(res));
+			}
+
 			client.send();
-
 			//Close the connection TODO: resposne to keep-alive
 			client.shutdown();
 		}
@@ -75,16 +86,5 @@ void Http::HttpServer::threadNetworkHandler() {
 }
 
 Http::HttpResponse Http::HttpServer::httpRequestHandler(HttpRequest req) {
-	Http::HttpResponse res {
-		"HTTP/1.1",
-		404,
-		"Not Found",
-		{
-			{ "Content-Type", "text/html" },
-			{ "Server", SERVER_NAME },
-			{ "Connection", "close" }
-		},
-		"<h1>404 - Not Found</h1>"
-	};
-	return res;
+	return buildError(404, "Not Found", defaultHtml("404 - Not Found", "404 - Not Found", "The requested resouce could not be found on this server"));
 }
