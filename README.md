@@ -25,3 +25,5 @@ You can extend `Http::HttpServer` and override `httpRequestHandler` to implement
 - Seperate into two projects: a library and application
 - Configuration files
 - Add more default functionality
+- Chunked delivery
+- Gzip encoding
