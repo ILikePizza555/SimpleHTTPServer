@@ -135,6 +135,10 @@
     <ClInclude Include="Sockets.h" />
     <ClInclude Include="string_utils.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="index.html" />
+    <None Include="main.css" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

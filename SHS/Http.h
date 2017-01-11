@@ -8,7 +8,7 @@
 #include <string>
 #include <exception>
 
-#define SERVER_NAME "SHS/0.1 - RainbowDash"
+#define SERVER_NAME "SHS/0.9 - Rainbow Dash"
 #define CRLF "\r\n"
 
 #define HTTP_VERSION "HTTP/1.1"
@@ -56,4 +56,6 @@ namespace Http {
 	std::string defaultHtml(std::string title, std::string header, std::string message);
 
 	HttpResponse buildError(int statusCode, std::string reason, std::string html);
+
+	std::string guessMime(std::string filename);
 }

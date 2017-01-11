@@ -86,5 +86,40 @@ void Http::HttpServer::threadNetworkHandler() {
 }
 
 Http::HttpResponse Http::HttpServer::httpRequestHandler(HttpRequest req) {
-	return buildError(404, "Not Found", defaultHtml("404 - Not Found", "404 - Not Found", "The requested resouce could not be found on this server"));
+	if (req.method == GET) {
+		//Modify the req if it's root
+		if (req.path == "/") req.path = "/index.html";
+
+		HttpResponse rv;
+		std::ifstream file(req.path.substr(1, req.path.length()));
+		std::ostringstream fileContents;
+
+		//C++ has no way to check if a file exists, or for file permissions, so we just assume it doesn't work if there's an error.
+		if (!file) return buildError(404, "Not Found", defaultHtml("404 - Not Found", "404 - Not Found", "The requested resouce could not be found on this server"));
+
+		//Everything is okay. Reply with 200.
+		rv.statusCode = 200;
+		rv.reason = "OK";
+		rv.version = HTTP_VERSION;
+
+		//Extact the file contents into a string
+		fileContents << file.rdbuf();
+		file.close();
+		rv.body = fileContents.str();
+
+		//Easter egg
+		utils::string::replace(rv.body, "{SERVERNAME}", SERVER_NAME);
+
+		rv.headers = std::map<std::string, std::string> {
+			{"Server", SERVER_NAME},
+			{"Content-Type", guessMime(req.path)},
+			{"Content-Length", std::to_string(rv.body.length())},
+			{"Connection", "close"}
+		};
+
+		return rv;
+	}
+
+	//For everything else, return not implemented
+	return buildError(501, "Not Implemented", defaultHtml("501 - Not Implemented", "501 - Not Implemented", "The requested action is not implemented on this server."));
 }

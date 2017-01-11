@@ -2,10 +2,12 @@
 
 #include <iostream>
 #include <chrono>
+#include <time.h>
 #include <vector>
 #include <thread>
 #include <queue>
 #include <mutex>
+#include <fstream>
 
 #include "Http.h"
 #include "Sockets.h"

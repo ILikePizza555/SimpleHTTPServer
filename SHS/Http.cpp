@@ -10,15 +10,15 @@ Http::METHOD Http::getMethod(std::string str) {
 	else if (str == "OPTIONS")	return OPTIONS;
 	else if (str == "CONNECT")	return CONNECT;
 	else if (str == "PATCH")	return PATCH;
-	else throw MethodError(utils::concat({"Invalid HTTP method: ", str}));
+	else throw MethodError(utils::string::concat({"Invalid HTTP method: ", str}));
 }
 
 Http::HttpRequest Http::parseHttpRequest(std::string httpString) {
-	auto lines =  utils::split(httpString, CRLF);
+	auto lines =  utils::string::split(httpString, CRLF);
 	HttpRequest rv;
 
 	//Parse the request line (method, url, and version)
-	auto request = utils::split(lines[0], " ");
+	auto request = utils::string::split(lines[0], " ");
 
 	rv.method = getMethod(request[0]);
 	rv.path = request[1];
@@ -28,7 +28,7 @@ Http::HttpRequest Http::parseHttpRequest(std::string httpString) {
 
 		//Need to ensure that the version string is valid
 		if (rv.version != "HTTP/1.1" && rv.version != "HTTP/1.0") {
-			throw RequestError(utils::concat({ "Supplied version \"", rv.version, "\" is not a valid HTTP version." }));
+			throw RequestError(utils::string::concat({ "Supplied version \"", rv.version, "\" is not a valid HTTP version." }));
 		}
 	} else  {
 		rv.version = "HTTP/1.1";
@@ -39,13 +39,13 @@ Http::HttpRequest Http::parseHttpRequest(std::string httpString) {
 		//Parse the headers
 		int header_end = std::find_if(lines.begin() + 1, lines.end(), [](std::string& s) {return s.empty();}) - lines.begin();
 		for(int i = 1; i < header_end; i++) {
-			auto line = utils::split(lines[i], ":", 1);
-			utils::trim(line[0]);
-			utils::trim(line[1]);
+			auto line = utils::string::split(lines[i], ":", 1);
+			utils::string::trim(line[0]);
+			utils::string::trim(line[1]);
 			rv.headers.insert(std::make_pair(line[0], line[1]));
 		}
 
-		rv.body = utils::concat(lines, "", header_end);
+		rv.body = utils::string::concat(lines, "", header_end);
 	}
 
 	return rv;
@@ -69,8 +69,9 @@ std::string Http::serializeHttpResponse(Http::HttpResponse response) {
 	return rv.str();
 }
 
+//TODO: Make this into some file parser or something
 std::string Http::defaultHtml(std::string title, std::string header, std::string message) {
-	return utils::concat({  "<html><head><title>", 
+	return utils::string::concat({  "<html><head><title>", 
 							title, 
 							"</title></head><body><h1>", 
 							header, 
@@ -88,10 +89,25 @@ Http::HttpResponse Http::buildError(int statusCode, std::string reason, std::str
 		reason,
 		{
 			{ "Content-Type", CT_HTML },
+			{ "Content-Length", std::to_string(html.length())},
 			{ "Server", SERVER_NAME },
 			{ "Connection", "close" }
 		},
 		html
 	};
 	return rv;
+}
+
+std::string Http::guessMime(std::string filename) {
+	std::string ext = utils::string::split(filename, ".").back();
+
+	if (utils::string::beginsWith(ext, "htm")) return "text/html";
+	if (ext == "bmp") return "image/bmp";
+	if (ext == "png") return "image/png";
+	if (ext == "jpeg" || ext == "jpg") return "image/jpeg";
+	if (ext == "gif") return "image/gif";
+	if (ext == "json") return "application/json";
+	if (ext == "css") return "text/css";
+	
+	return "application/octet-stream";
 }
