@@ -14,6 +14,7 @@ void Buffer::set(int pos, char item) {
 }
 
 void Buffer::assign(const char* string, size_t size) {
+	if(size > length) throw std::overflow_error("Given string is too large for buffer of size " + std::to_string(length) + "!");
 	for(int i = 0; i < size; i++) buffer[i] = string[i];
 }
 

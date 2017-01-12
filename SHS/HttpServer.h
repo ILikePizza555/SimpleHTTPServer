@@ -27,7 +27,7 @@ namespace Http {
 
 		protected:
 			void threadNetworkHandler();
-			HttpResponse httpRequestHandler(HttpRequest req);
+			HttpResponse httpRequestHandler(HttpRequest req) const;
 
 		public:
 			HttpServer(int threadCount = 100);

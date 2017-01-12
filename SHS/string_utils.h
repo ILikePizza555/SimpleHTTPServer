@@ -21,6 +21,7 @@ namespace utils {
 		void trim(std::string& string);
 
 		bool beginsWith(std::string str, std::string begin);
+		bool endsWith(std::string str, std::string end);
 
 		void replace(std::string& src, std::string sub, std::string replace, int count = -1);
 	}

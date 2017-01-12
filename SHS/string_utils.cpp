@@ -57,6 +57,11 @@ bool utils::string::beginsWith(std::string str, std::string begin) {
 	return  str.substr(0, begin.length()) == begin;
 }
 
+bool utils::string::endsWith(std::string str, std::string end) {
+	int beginIndex = str.length() - end.length();
+	return str.substr(beginIndex, end.length()) == end;
+}
+
 void utils::string::replace(std::string & src, std::string sub, std::string replace, int count) {
 	while (count != 0) {
 		size_t index = 0;

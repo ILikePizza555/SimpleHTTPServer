@@ -65,33 +65,28 @@ void Http::HttpServer::threadNetworkHandler() {
 
 				Http::HttpResponse res = httpRequestHandler(req);
 
-				//Send the server data
-				client.buffer.clear();
-				client.buffer.assign(Http::serializeHttpResponse(res));
+				Http::sendResponse(client, res);
 			} catch (Http::RequestError e) {
 				Http::HttpResponse res = buildError(400, "Bad Request", defaultHtml("400 - Bad Request", "400 - Bad Request", e.what()));
-				client.buffer.clear();
-				client.buffer.assign(Http::serializeHttpResponse(res));
+				Http::sendResponse(client, res);
 			} catch (Http::HttpError e ) {
 				Http::HttpResponse res = buildError(500, "Server Error", defaultHtml("500 - Server Error", "500 - Internal Server Error", e.what()));
-				client.buffer.clear();
-				client.buffer.assign(Http::serializeHttpResponse(res));
+				Http::sendResponse(client, res);
 			}
 
-			client.send();
 			//Close the connection TODO: resposne to keep-alive
 			client.shutdown();
 		}
 	}
 }
 
-Http::HttpResponse Http::HttpServer::httpRequestHandler(HttpRequest req) {
+Http::HttpResponse Http::HttpServer::httpRequestHandler(HttpRequest req) const {
 	if (req.method == GET) {
 		//Modify the req if it's root
-		if (req.path == "/") req.path = "/index.html";
+		if (req.path.back() == '/') req.path.append("index.html");
 
 		HttpResponse rv;
-		std::ifstream file(req.path.substr(1, req.path.length()));
+		std::ifstream file(req.path.substr(1, req.path.length()), std::ios::binary);
 		std::ostringstream fileContents;
 
 		//C++ has no way to check if a file exists, or for file permissions, so we just assume it doesn't work if there's an error.
@@ -108,7 +103,7 @@ Http::HttpResponse Http::HttpServer::httpRequestHandler(HttpRequest req) {
 		rv.body = fileContents.str();
 
 		//Easter egg
-		utils::string::replace(rv.body, "{SERVERNAME}", SERVER_NAME);
+		if (utils::string::endsWith(req.path, "html")) utils::string::replace(rv.body, "{SERVERNAME}", SERVER_NAME);
 
 		rv.headers = std::map<std::string, std::string> {
 			{"Server", SERVER_NAME},

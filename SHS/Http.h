@@ -7,6 +7,7 @@
 #include <map>
 #include <string>
 #include <exception>
+#include "Sockets.h"
 
 #define SERVER_NAME "SHS/0.9 - Rainbow Dash"
 #define CRLF "\r\n"
@@ -51,11 +52,13 @@ namespace Http {
 	METHOD getMethod(std::string str);
 
 	HttpRequest parseHttpRequest(std::string httpString);
-	std::string serializeHttpResponse(HttpResponse);
+	std::string serializeHttpResponse(HttpResponse& res);
 
 	std::string defaultHtml(std::string title, std::string header, std::string message);
 
 	HttpResponse buildError(int statusCode, std::string reason, std::string html);
 
 	std::string guessMime(std::string filename);
+
+	void sendResponse(sockets::ClientConnection& client, HttpResponse& res);
 }

@@ -51,7 +51,7 @@ Http::HttpRequest Http::parseHttpRequest(std::string httpString) {
 	return rv;
 }
 
-std::string Http::serializeHttpResponse(Http::HttpResponse response) {
+std::string Http::serializeHttpResponse(Http::HttpResponse& response) {
 	std::ostringstream rv;
 
 	//Header line
@@ -110,4 +110,26 @@ std::string Http::guessMime(std::string filename) {
 	if (ext == "css") return "text/css";
 	
 	return "application/octet-stream";
+}
+
+void Http::sendResponse(sockets::ClientConnection& client, HttpResponse& res) {
+	client.buffer.clear();
+	auto data = serializeHttpResponse(res);
+	int ptr = 0;
+
+	//If the data is small enough, just send it
+	if (data.length() <= client.buffer.getLength()) {
+		client.buffer.assign(data);
+		client.send();
+		return;
+	}
+
+	//Otherwise, we have to chunk it
+	while(ptr < data.length()) {
+		client.buffer.assign(data.substr(ptr, client.buffer.getLength()));
+		client.send();
+
+		client.buffer.clear();
+		ptr += client.buffer.getLength();
+	}
 }
