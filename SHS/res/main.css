@@ -26,3 +26,8 @@ h1,h2,h3 {
 #line3::before {
 	content: "You must feel proud of yourself. Are you happy yet?"
 }
+
+.center {
+	display: block;
+	margin: auto;
+}

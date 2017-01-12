@@ -136,8 +136,11 @@
     <ClInclude Include="string_utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="index.html" />
-    <None Include="main.css" />
+    <None Include="res\index.html" />
+    <None Include="res\main.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Rainbow-dash-flying-gif-i15.gif" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

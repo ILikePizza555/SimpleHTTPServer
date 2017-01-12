@@ -73,11 +73,16 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="index.html">
+    <None Include="res\index.html">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="main.css">
+    <None Include="res\main.css">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Rainbow-dash-flying-gif-i15.gif">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
