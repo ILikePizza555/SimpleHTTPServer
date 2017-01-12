@@ -100,35 +100,32 @@ Http::HttpResponse Http::HttpServer::httpRequestHandler(HttpRequest req) const
 {
 	if (req.method == GET)
 	{
-		//Modify the req if it's root
-		if (req.path.back() == '/') req.path.append("index.html");
-
-		HttpResponse rv;
-		std::ifstream file(req.path.substr(1, req.path.length()), std::ios::binary);
-		std::ostringstream fileContents;
+		std::ifstream file = Http::openFile(req);
 
 		//C++ has no way to check if a file exists, or for file permissions, so we just assume it doesn't work if there's an error.
 		if (!file) return buildError(404, "Not Found", defaultHtml("404 - Not Found", "404 - Not Found", "The requested resouce could not be found on this server"));
 
-		//Everything is okay. Reply with 200.
-		rv.statusCode = 200;
-		rv.reason = "OK";
-		rv.version = HTTP_VERSION;
-
-		//Extact the file contents into a string
+		//Extact the file contents into a string stream
+		std::ostringstream fileContents;
 		fileContents << file.rdbuf();
 		file.close();
-		rv.body = fileContents.str();
+
+		//Everything is okay. Reply with 200.
+		HttpResponse rv {
+			HTTP_VERSION,
+			200,
+			"OK",
+			std::map<std::string, std::string>{
+				{"Server", SERVER_NAME},
+				{"Content-Type", guessMime(req.path)},
+				{"Content-Length", std::to_string(rv.body.length())},
+				{"Connection", "close"}
+			},
+			fileContents.str()
+		};
 
 		//Easter egg
 		if (utils::string::endsWith(req.path, "html")) utils::string::replace(rv.body, "{SERVERNAME}", SERVER_NAME);
-
-		rv.headers = std::map<std::string, std::string>{
-			{"Server", SERVER_NAME},
-			{"Content-Type", guessMime(req.path)},
-			{"Content-Length", std::to_string(rv.body.length())},
-			{"Connection", "close"}
-		};
 
 		return rv;
 	}

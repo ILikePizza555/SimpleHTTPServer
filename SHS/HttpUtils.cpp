@@ -70,3 +70,10 @@ void Http::sendResponse(sockets::ClientConnection& client, HttpResponse& res)
 		ptr += client.buffer.getLength();
 	}
 }
+
+std::ifstream Http::openFile(HttpRequest& req, std::string rootFile)
+{
+	//Modify the req if it's root
+	if (req.path.back() == '/') req.path.append(rootFile);
+	return std::ifstream(req.path.substr(1, req.path.length()), std::ios::binary);
+}

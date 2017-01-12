@@ -1,60 +1,71 @@
 #include "Sockets.h"
 
-sockets::ClientConnection::ClientConnection(SOCKET& cs, sockaddr_storage addr, socklen_t len, size_t bufferSize) : clientSocket(cs), addr(addr), len(len), closed(false), buffer(bufferSize) {}
+sockets::ClientConnection::ClientConnection(SOCKET& cs, sockaddr_storage addr, socklen_t len, size_t bufferSize) : clientSocket(cs), addr(addr), len(len), closed(false), buffer(bufferSize)
+{
+}
 
-void sockets::ClientConnection::close() {
+void sockets::ClientConnection::close()
+{
 	closed = true;
 	closesocket(clientSocket);
 	return;
 }
 
-void sockets::ClientConnection::read() {
+void sockets::ClientConnection::read()
+{
 	//Check if the connection is closed
-	if(closed) throw SocketException("Error - connection has been closed. ", -1);
-	
+	if (closed) throw SocketException("Error - connection has been closed. ", -1);
+
 	//Read the socket
 	int iResult = recv(clientSocket, buffer.data(), buffer.getLength(), 0);
 
 	//Check results
 	if (iResult > 0) return;
-	else if (iResult == 0) { 
+	else if (iResult == 0)
+	{
 		close();
 		return;
 	}
 	else if (iResult < 0) throw SocketException("Error on recv. Error: ", WSAGetLastError());
 }
 
-void sockets::ClientConnection::send() {
+void sockets::ClientConnection::send()
+{
 	if (closed) throw SocketException("Error - connection has been closed. ", -1);
 
 	int iResult = ::send(clientSocket, buffer.data(), buffer.getLength(), 0);
 
-	if(iResult == SOCKET_ERROR) throw SocketException("Error on send. Error: ", WSAGetLastError());
+	if (iResult == SOCKET_ERROR) throw SocketException("Error on send. Error: ", WSAGetLastError());
 }
 
-bool sockets::ClientConnection::isClosed() {
+bool sockets::ClientConnection::isClosed()
+{
 	return closed;
 }
 
-std::string sockets::ClientConnection::getIp() {
+std::string sockets::ClientConnection::getIp()
+{
 	char ipstr[INET6_ADDRSTRLEN];
 
-	if (addr.ss_family == AF_INET) {
+	if (addr.ss_family == AF_INET)
+	{
 		//IPv4
-		sockaddr_in *s = (sockaddr_in*)&addr;
+		sockaddr_in* s = (sockaddr_in*)&addr;
 		inet_ntop(AF_INET, &s->sin_addr, ipstr, sizeof ipstr);
 	}
-	else {
+	else
+	{
 		//IPv6
-		sockaddr_in6 *s = (sockaddr_in6 *)&addr;
+		sockaddr_in6* s = (sockaddr_in6 *)&addr;
 		inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
 	}
 
 	return std::string(ipstr);
 }
 
-void sockets::ClientConnection::shutdown() {
-	if(closed) return;
+void sockets::ClientConnection::shutdown()
+{
+	if (closed) return;
 
 	::shutdown(clientSocket, SD_SEND);
 	close();

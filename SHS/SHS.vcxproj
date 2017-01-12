@@ -122,6 +122,7 @@
     <ClCompile Include="ClientConnection.cpp" />
     <ClCompile Include="Http.cpp" />
     <ClCompile Include="HttpServer.cpp" />
+    <ClCompile Include="HttpUtils.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ServerSocket.cpp" />
     <ClCompile Include="Sockets.cpp" />
@@ -132,6 +133,7 @@
     <ClInclude Include="Http.h" />
     <ClInclude Include="HttpError.h" />
     <ClInclude Include="HttpServer.h" />
+    <ClInclude Include="HttpUtils.h" />
     <ClInclude Include="Sockets.h" />
     <ClInclude Include="string_utils.h" />
   </ItemGroup>
