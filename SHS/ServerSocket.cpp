@@ -1,6 +1,7 @@
 #include "Sockets.h"
 
-sockets::ServerSocket::ServerSocket(std::string ip, std::string port) : ip(ip), port(port) {
+sockets::ServerSocket::ServerSocket(std::string ip, std::string port) : ip(ip), port(port)
+{
 	//Define iResult for calling the result functions
 	int iResult = 0;
 
@@ -33,15 +34,18 @@ sockets::ServerSocket::ServerSocket(std::string ip, std::string port) : ip(ip), 
 	freeaddrinfo(serverinfo);
 }
 
-sockets::ServerSocket::~ServerSocket() {
+sockets::ServerSocket::~ServerSocket()
+{
 	closesocket(listenSocket);
 }
 
-void sockets::ServerSocket::listen(int backlog) {
+void sockets::ServerSocket::listen(int backlog)
+{
 	if (::listen(listenSocket, backlog) == SOCKET_ERROR) throw SocketException("Error on listen. Error: ", WSAGetLastError());
 }
 
-sockets::ClientConnection sockets::ServerSocket::accept(size_t bufferSize) {
+sockets::ClientConnection sockets::ServerSocket::accept(size_t bufferSize)
+{
 	SOCKET clientSocket = INVALID_SOCKET;
 	sockaddr_storage addr;
 	socklen_t len = sizeof addr;

@@ -12,23 +12,29 @@
 #define DEFAULT_PORT "80"
 #define DEFAULT_BUFFER_SIZE 2048
 
-namespace sockets {
-	class SocketException : std::exception {
-		public:
+namespace sockets
+{
+	class SocketException : std::exception
+	{
+	public:
 		std::string message;
 		int errorCode;
 
-		SocketException(std::string message, int errorCode) : message(message), errorCode(errorCode) {};
+		SocketException(std::string message, int errorCode) : message(message), errorCode(errorCode)
+		{
+		};
 
-		const char* what() const override {
+		const char* what() const override
+		{
 			return message.c_str();
 		}
 	};
 
-	class ClientConnection {
+	class ClientConnection
+	{
 		friend class ServerSocket;
 
-		private:
+	private:
 		SOCKET clientSocket;
 		sockaddr_storage addr;
 		socklen_t len;
@@ -37,7 +43,7 @@ namespace sockets {
 
 		ClientConnection(SOCKET& cs, sockaddr_storage addr, socklen_t len, size_t bufferSize);
 
-		public:
+	public:
 		Buffer buffer;
 
 		bool isClosed();
@@ -53,7 +59,8 @@ namespace sockets {
 		void shutdown();
 	};
 
-	class ServerSocket {
+	class ServerSocket
+	{
 	private:
 		std::string ip;
 		std::string port;
@@ -69,7 +76,6 @@ namespace sockets {
 		void listen(int backlog = SOMAXCONN);
 		//Accepts a connection, and returns an object representing the connection (blocks until a connection is established)
 		ClientConnection accept(size_t bufferSize = DEFAULT_BUFFER_SIZE);
-
 	};
 
 	WSAData init();

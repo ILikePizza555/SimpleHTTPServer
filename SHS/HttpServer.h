@@ -10,6 +10,7 @@
 #include <fstream>
 
 #include "Http.h"
+#include "HttpUtils.h"
 #include "Sockets.h"
 
 namespace Http {
@@ -35,6 +36,6 @@ namespace Http {
 			void start();
 			void stop();
 
-			bool isStopped();
+			bool isStopped() const;
 	};
 }

@@ -2,7 +2,8 @@
 #include "HttpServer.h"
 
 
-int main(int argc, char* argv) {
+int main(int argc, char* argv)
+{
 	sockets::init();
 
 	Http::HttpServer server(5);

@@ -3,12 +3,13 @@
 #include <memory>
 #include <string>
 
-class Buffer {
-	private:
+class Buffer
+{
+private:
 	std::unique_ptr<char[]> buffer;
 	size_t length;
 
-	public:
+public:
 
 	Buffer(std::unique_ptr<char[]> ptr, size_t length);
 	Buffer(char* ptr, size_t length);

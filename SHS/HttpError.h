@@ -3,22 +3,30 @@
 #include <exception>
 #include <string>
 
-namespace Http {
-	class HttpError : public std::exception {
+namespace Http
+{
+	class HttpError : public std::exception
+	{
 		std::string message;
 
 	public:
-		HttpError(std::string message) : message(message) {}
-		const char* what() const override {
+		HttpError(std::string message) : message(message)
+		{
+		}
+
+		const char* what() const override
+		{
 			return message.c_str();
 		}
 	};
 
-	class MethodError : public HttpError {
+	class MethodError : public HttpError
+	{
 		using HttpError::HttpError;
 	};
 
-	class RequestError : public HttpError {
+	class RequestError : public HttpError
+	{
 		using HttpError::HttpError;
 	};
 }
