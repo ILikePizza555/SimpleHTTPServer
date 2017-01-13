@@ -50,21 +50,22 @@ void Http::sendResponse(sockets::ClientConnection& client, HttpResponse& res)
 {
 	client.buffer.clear();
 	auto data = serializeHttpResponse(res);
-	int ptr = 0;
+	size_t ptr = 0;
 
 	//If the data is small enough, just send it
 	if (data.length() <= client.buffer.getLength())
 	{
 		client.buffer.assign(data);
-		client.send();
+		client.send(data.length());
 		return;
 	}
 
 	//Otherwise, we have to chunk it
 	while (ptr < data.length())
 	{
-		client.buffer.assign(data.substr(ptr, client.buffer.getLength()));
-		client.send();
+		auto subdata = data.substr(ptr, client.buffer.getLength());
+		client.buffer.assign(subdata);
+		client.send(subdata.length());
 
 		client.buffer.clear();
 		ptr += client.buffer.getLength();

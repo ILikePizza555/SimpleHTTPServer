@@ -142,7 +142,7 @@
     <None Include="res\main.css" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\Rainbow-dash-flying-gif-i15.gif" />
+    <Image Include="res\img.gif" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -31,14 +31,20 @@ void sockets::ClientConnection::read()
 
 void sockets::ClientConnection::send()
 {
-	if (closed) throw SocketException("Error - connection has been closed. ", -1);
+	send(buffer.getLength());
+}
 
-	int iResult = ::send(clientSocket, buffer.data(), buffer.getLength(), 0);
+void sockets::ClientConnection::send(size_t amount)
+{
+	if (closed) throw SocketException("Error - connection has been closed. ", -1);
+	if (amount > buffer.getLength()) throw std::length_error("Given amount exceeds buffer length!");
+
+	int iResult = ::send(clientSocket, buffer.data(), amount, 0);
 
 	if (iResult == SOCKET_ERROR) throw SocketException("Error on send. Error: ", WSAGetLastError());
 }
 
-bool sockets::ClientConnection::isClosed()
+bool sockets::ClientConnection::isClosed() const
 {
 	return closed;
 }

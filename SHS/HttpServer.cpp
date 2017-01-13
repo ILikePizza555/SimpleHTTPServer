@@ -51,11 +51,11 @@ void Http::HttpServer::threadNetworkHandler()
 	{
 		//Aquire the lock (wait until lock is aquired)
 		std::unique_lock<std::timed_mutex> lock(clientQueueMutex, std::defer_lock);
-		bool lock_success = lock.try_lock_for(std::chrono::milliseconds(10));
+		bool lock_success = lock.try_lock();
 
 		if (!lock_success || clientQueue.empty())
 		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+			std::this_thread::sleep_for(std::chrono::nanoseconds(100));
 			continue;
 		}
 
@@ -108,6 +108,7 @@ Http::HttpResponse Http::HttpServer::httpRequestHandler(HttpRequest req) const
 		//Extact the file contents into a string stream
 		std::ostringstream fileContents;
 		fileContents << file.rdbuf();
+		std::string body = fileContents.str();
 		file.close();
 
 		//Everything is okay. Reply with 200.
@@ -118,10 +119,10 @@ Http::HttpResponse Http::HttpServer::httpRequestHandler(HttpRequest req) const
 			std::map<std::string, std::string>{
 				{"Server", SERVER_NAME},
 				{"Content-Type", guessMime(req.path)},
-				{"Content-Length", std::to_string(rv.body.length())},
+				{"Content-Length", std::to_string(body.length())},
 				{"Connection", "close"}
 			},
-			fileContents.str()
+			body
 		};
 
 		//Easter egg

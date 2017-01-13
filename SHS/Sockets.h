@@ -46,11 +46,12 @@ namespace sockets
 	public:
 		Buffer buffer;
 
-		bool isClosed();
+		bool isClosed() const;
 		std::string getIp();
 
-		//Sends the data in writebuffer 
+		//Sends the data in writebuffer
 		void send();
+		void send(size_t amount);
 		//Reads data into readbuffer
 		void read();
 		//Closes the sockets
