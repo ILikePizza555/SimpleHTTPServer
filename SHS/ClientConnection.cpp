@@ -56,13 +56,13 @@ std::string sockets::ClientConnection::getIp()
 	if (addr.ss_family == AF_INET)
 	{
 		//IPv4
-		sockaddr_in* s = (sockaddr_in*)&addr;
+		auto s = reinterpret_cast<sockaddr_in*>(&addr);
 		inet_ntop(AF_INET, &s->sin_addr, ipstr, sizeof ipstr);
 	}
 	else
 	{
 		//IPv6
-		sockaddr_in6* s = (sockaddr_in6 *)&addr;
+		auto s = reinterpret_cast<sockaddr_in6 *>(&addr);
 		inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
 	}
 

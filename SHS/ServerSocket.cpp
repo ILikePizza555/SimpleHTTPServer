@@ -39,18 +39,18 @@ sockets::ServerSocket::~ServerSocket()
 	closesocket(listenSocket);
 }
 
-void sockets::ServerSocket::listen(int backlog)
+void sockets::ServerSocket::listen(int backlog) const
 {
 	if (::listen(listenSocket, backlog) == SOCKET_ERROR) throw SocketException("Error on listen. Error: ", WSAGetLastError());
 }
 
-sockets::ClientConnection sockets::ServerSocket::accept(size_t bufferSize)
+sockets::ClientConnection sockets::ServerSocket::accept(size_t bufferSize) const
 {
 	SOCKET clientSocket = INVALID_SOCKET;
 	sockaddr_storage addr;
 	socklen_t len = sizeof addr;
 
-	if ((clientSocket = ::accept(listenSocket, (sockaddr*)&addr, &len)) == INVALID_SOCKET) throw SocketException("Error on accept. Error: ", WSAGetLastError());
+	if ((clientSocket = ::accept(listenSocket, reinterpret_cast<sockaddr*>(&addr), &len)) == INVALID_SOCKET) throw SocketException("Error on accept. Error: ", WSAGetLastError());
 
 	sockets::ClientConnection rv(clientSocket, addr, len, bufferSize);
 	return rv;

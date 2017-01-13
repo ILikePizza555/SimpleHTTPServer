@@ -33,7 +33,7 @@ Http::HttpResponse Http::buildError(int statusCode, std::string reason, std::str
 
 std::string Http::guessMime(std::string filename)
 {
-	std::string ext = utils::string::split(filename, ".").back();
+	auto ext = utils::string::split(filename, ".").back();
 
 	if (utils::string::beginsWith(ext, "htm")) return "text/html";
 	if (ext == "bmp") return "image/bmp";

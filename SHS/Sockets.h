@@ -74,9 +74,9 @@ namespace sockets
 		~ServerSocket();
 
 		//Enables listening for connections
-		void listen(int backlog = SOMAXCONN);
+		void listen(int backlog = SOMAXCONN) const;
 		//Accepts a connection, and returns an object representing the connection (blocks until a connection is established)
-		ClientConnection accept(size_t bufferSize = DEFAULT_BUFFER_SIZE);
+		ClientConnection accept(size_t bufferSize = DEFAULT_BUFFER_SIZE) const;
 	};
 
 	WSAData init();
