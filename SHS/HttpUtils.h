@@ -11,7 +11,7 @@ namespace Http {
 
 	std::string guessMime(std::string filename);
 
-	void sendResponse(sockets::ClientConnection& client, HttpResponse& res);
+	void sendResponse(sockets::BufferedClientConnection& client, HttpResponse& res);
 
 	/**
 	 * \brief Opens a file. Also checks for root of directory.

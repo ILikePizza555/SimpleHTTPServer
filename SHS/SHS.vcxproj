@@ -118,7 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="BufferedClientConnection.cpp" />
     <ClCompile Include="ClientConnection.cpp" />
     <ClCompile Include="Http.cpp" />
     <ClCompile Include="HttpServer.cpp" />
@@ -129,7 +129,6 @@
     <ClCompile Include="string_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Buffer.h" />
     <ClInclude Include="Http.h" />
     <ClInclude Include="HttpError.h" />
     <ClInclude Include="HttpServer.h" />

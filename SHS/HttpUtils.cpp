@@ -46,16 +46,16 @@ std::string Http::guessMime(std::string filename)
 	return "application/octet-stream";
 }
 
-void Http::sendResponse(sockets::ClientConnection& client, HttpResponse& res)
+void Http::sendResponse(sockets::BufferedClientConnection& client, HttpResponse& res)
 {
-	client.buffer.clear();
+	client.clear();
 	auto data = serializeHttpResponse(res);
 	size_t ptr = 0;
 
 	//If the data is small enough, just send it
-	if (data.length() <= client.buffer.getLength())
+	if (data.length() <= client.getLength())
 	{
-		client.buffer.assign(data);
+		client.assign(data);
 		client.send(data.length());
 		return;
 	}
@@ -63,12 +63,12 @@ void Http::sendResponse(sockets::ClientConnection& client, HttpResponse& res)
 	//Otherwise, we have to chunk it
 	while (ptr < data.length())
 	{
-		auto subdata = data.substr(ptr, client.buffer.getLength());
-		client.buffer.assign(subdata);
+		auto subdata = data.substr(ptr, client.getLength());
+		client.assign(subdata);
 		client.send(subdata.length());
 
-		client.buffer.clear();
-		ptr += client.buffer.getLength();
+		client.clear();
+		ptr += client.getLength();
 	}
 }
 

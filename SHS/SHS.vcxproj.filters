@@ -33,9 +33,6 @@
     <ClCompile Include="string_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Buffer.cpp">
-      <Filter>Source Files\Sockets</Filter>
-    </ClCompile>
     <ClCompile Include="ClientConnection.cpp">
       <Filter>Source Files\Sockets</Filter>
     </ClCompile>
@@ -54,6 +51,9 @@
     <ClCompile Include="HttpUtils.cpp">
       <Filter>Source Files\Http</Filter>
     </ClCompile>
+    <ClCompile Include="BufferedClientConnection.cpp">
+      <Filter>Source Files\Sockets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="string_utils.h">
@@ -61,9 +61,6 @@
     </ClInclude>
     <ClInclude Include="Http.h">
       <Filter>Header Files\Http</Filter>
-    </ClInclude>
-    <ClInclude Include="Buffer.h">
-      <Filter>Header Files\Sockets</Filter>
     </ClInclude>
     <ClInclude Include="Sockets.h">
       <Filter>Header Files\Sockets</Filter>

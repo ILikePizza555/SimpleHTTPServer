@@ -32,11 +32,10 @@ void Http::HttpServer::start()
 		try
 		{
 			sockets::ClientConnection client = server.accept();
-			client.buffer.clear();
 
 			//Yes, we need to get the lock even in the main thread
 			std::lock_guard<std::mutex> lock(clientQueueMutex);
-			clientQueue.push(std::move(client));
+			clientQueue.push(client);
 			clientQueueConditionVariable.notify_one();
 		}
 		catch (sockets::SocketException e)
@@ -48,14 +47,15 @@ void Http::HttpServer::start()
 
 void Http::HttpServer::threadNetworkHandler()
 {
+	char buffer[DEFAULT_BUFFER_SIZE];
+
 	while (!stopped)
 	{
 		//Aquire the lock (wait until lock is aquired)
 		std::unique_lock<std::mutex> lock(clientQueueMutex);
 		if (clientQueue.empty()) clientQueueConditionVariable.wait(lock);
 
-		//Explicitly move the the connection out of the queue
-		sockets::ClientConnection client = std::move(clientQueue.front());
+		sockets::BufferedClientConnection client(clientQueue.front(), buffer, sizeof buffer);
 		clientQueue.pop();
 
 		std::cout << "[" << std::this_thread::get_id() << "] handling connection for " << client.getIp() << std::endl;
@@ -66,11 +66,12 @@ void Http::HttpServer::threadNetworkHandler()
 		while (!client.isClosed())
 		{
 			//Read the client data
+			client.clear();
 			client.read();
 
 			try
 			{
-				Http::HttpRequest req = Http::parseHttpRequest(client.buffer.data());
+				Http::HttpRequest req = Http::parseHttpRequest(client.data());
 				Http::HttpResponse res = httpRequestHandler(req);
 
 				Http::sendResponse(client, res);
