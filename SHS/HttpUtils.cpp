@@ -5,7 +5,7 @@ std::string Http::defaultHtml(std::string title, std::string header, std::string
 {
 	return utils::string::concat({"<html><head><title>",
 		title,
-		"</title></head><body><h1>",
+		"</title><style>body{margin:2.5em auto;max-width:40.625em;line-height:1.6;font-size:18px;color:#222;padding:0 10px;background-color:#EEE;}</style></head><body><h1>",
 		header,
 		"</h1><p>",
 		message,

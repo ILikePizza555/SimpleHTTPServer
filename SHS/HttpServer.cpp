@@ -35,8 +35,9 @@ void Http::HttpServer::start()
 			client.buffer.clear();
 
 			//Yes, we need to get the lock even in the main thread
-			std::lock_guard<std::timed_mutex> lock(clientQueueMutex);
+			std::lock_guard<std::mutex> lock(clientQueueMutex);
 			clientQueue.push(std::move(client));
+			clientQueueConditionVariable.notify_one();
 		}
 		catch (sockets::SocketException e)
 		{
@@ -50,14 +51,8 @@ void Http::HttpServer::threadNetworkHandler()
 	while (!stopped)
 	{
 		//Aquire the lock (wait until lock is aquired)
-		std::unique_lock<std::timed_mutex> lock(clientQueueMutex, std::defer_lock);
-		bool lock_success = lock.try_lock();
-
-		if (!lock_success || clientQueue.empty())
-		{
-			std::this_thread::sleep_for(std::chrono::nanoseconds(100));
-			continue;
-		}
+		std::unique_lock<std::mutex> lock(clientQueueMutex);
+		if (clientQueue.empty()) clientQueueConditionVariable.wait(lock);
 
 		//Explicitly move the the connection out of the queue
 		sockets::ClientConnection client = std::move(clientQueue.front());
@@ -84,7 +79,7 @@ void Http::HttpServer::threadNetworkHandler()
 			{
 				Http::HttpResponse res = buildError(400, "Bad Request", defaultHtml("400 - Bad Request", "400 - Bad Request", e.what()));
 				Http::sendResponse(client, res);
-			} catch (Http::HttpError e)
+			} catch (std::exception e)
 			{
 				Http::HttpResponse res = buildError(500, "Server Error", defaultHtml("500 - Server Error", "500 - Internal Server Error", e.what()));
 				Http::sendResponse(client, res);
