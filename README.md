@@ -16,3 +16,4 @@ You can extend `Http::HttpServer` and override `httpRequestHandler` to implement
 - Configuration files
 - Chunked delivery
 - Gzip encoding
+- Unit Tests
