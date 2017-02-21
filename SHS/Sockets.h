@@ -20,7 +20,7 @@ namespace sockets
 		std::string message;
 		int errorCode;
 
-		SocketException(std::string message, int errorCode) : message(message), errorCode(errorCode)
+		SocketException(std::string message, int errorCode) : message(message + std::to_string(errorCode)), errorCode(errorCode)
 		{
 		};
 

@@ -65,11 +65,11 @@ void Http::HttpServer::threadNetworkHandler()
 
 		while (!client.isClosed())
 		{
-			//Read the client data
-			client.read();
-
 			try
 			{
+				//Read the client data
+				client.read();
+
 				Http::HttpRequest req = Http::parseHttpRequest(client.buffer.data());
 				Http::HttpResponse res = httpRequestHandler(req);
 
@@ -79,10 +79,13 @@ void Http::HttpServer::threadNetworkHandler()
 			{
 				Http::HttpResponse res = buildError(400, "Bad Request", defaultHtml("400 - Bad Request", "400 - Bad Request", e.what()));
 				Http::sendResponse(client, res);
-			} catch (std::exception e)
+			}
+			catch (sockets::SocketException e) {
+				std::cout << e.what() << std::endl;
+			} 
+			catch (std::exception e)
 			{
-				Http::HttpResponse res = buildError(500, "Server Error", defaultHtml("500 - Server Error", "500 - Internal Server Error", e.what()));
-				Http::sendResponse(client, res);
+				std::cout << "Error: " << e.what() << std::endl;
 			}
 
 			//Close the connection TODO: resposne to keep-alive
