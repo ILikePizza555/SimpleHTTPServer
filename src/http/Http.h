@@ -1,13 +1,9 @@
 #pragma once
 
-#include "../string_utils.h"
 #include "HttpError.h"
 
-#include <algorithm>
 #include <map>
 #include <string>
-#include <exception>
-#include "Sockets.h"
 
 #define SERVER_NAME "SHS/0.9 - Rainbow Dash"
 #define CRLF "\r\n"

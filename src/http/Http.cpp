@@ -1,4 +1,8 @@
 #include "Http.h"
+#include "../string_utils.h"
+
+#include <exception>
+#include <algorithm>
 
 Http::METHOD Http::getMethod(std::string str)
 {
