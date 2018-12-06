@@ -10,14 +10,9 @@ namespace Http
 		std::string message;
 
 	public:
-		HttpError(std::string message) : message(message)
-		{
-		}
+		explicit HttpError(const std::string& message);
 
-		const char* what() const override
-		{
-			return message.c_str();
-		}
+		const char* what() const noexcept override;
 	};
 
 	class MethodError : public HttpError
