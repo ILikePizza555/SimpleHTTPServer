@@ -1,19 +1,24 @@
-## What
+A basic HTTP server written in C++.
 
-As the name suggests, this is a simple HTTP server I wrote using nothing but Winsock (restricting myself to standard POSIX functions) and the STL. It's intended to be cross-platform, and light on CPU usage and memory for modest amounts of traffic. It compiles successfully in Visual Studio 2015
+## Building
+
+SHS uses CMake for it's build system and depends on my other project: Sockets.cpp.
+
+Configuring with CMake will automatically download the dependency and compile SHS with Sockets.cpp statically linked.
+The current build process is:
+
+```bash
+cmake -G [Your generator here]
+make
+```
 
 ## Usage
 
-Right now, simply compile it and run it! Changing settings requires some small modifications to the source code. (Just a couple of #defines, nothing too big)
+Simply drop the binary into a directory and run it. SHS will automatically host the files in it's directory.
 
-You can extend `Http::HttpServer` and override `httpRequestHandler` to implement your own custom functionality. By default the server only responds to GET requests. All other requests return 501 Not Implemented.
-
-## TODO
+## Roadmap
 
 - Profile functions and optimize as needed.
-- Maybe convert to CMake
-- Maybe seperate into two projects: a library and application
-- Configuration files
 - Chunked delivery
 - Gzip encoding
-- Unit Tests
+- Support for other HTTP verbs
