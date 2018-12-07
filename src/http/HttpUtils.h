@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fstream>
+#include <sockets/Connection.h>
 
 #include "Http.h"
 
@@ -11,7 +12,7 @@ namespace Http {
 
 	std::string guessMime(std::string filename);
 
-	void sendResponse(sockets::ClientConnection& client, HttpResponse& res);
+	void sendResponse(sockets::TCPConnection& client, HttpResponse& res);
 
 	/**
 	 * \brief Opens a file. Also checks for root of directory.

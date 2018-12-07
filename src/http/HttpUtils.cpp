@@ -1,9 +1,11 @@
 #include "HttpUtils.h"
 
+#include "../StringUtils.h"
+
 //TODO: Make this into some file parser or something
 std::string Http::defaultHtml(std::string title, std::string header, std::string message)
 {
-	return utils::string::concat({"<html><head><title>",
+	return utils::concat({"<html><head><title>",
 		title,
 		"</title><style>body{margin:2.5em auto;max-width:40.625em;line-height:1.6;font-size:18px;color:#222;padding:0 10px;background-color:#EEE;}</style></head><body><h1>",
 		header,
@@ -33,9 +35,9 @@ Http::HttpResponse Http::buildError(int statusCode, std::string reason, std::str
 
 std::string Http::guessMime(std::string filename)
 {
-	auto ext = utils::string::split(filename, ".").back();
+	auto ext = utils::split(filename, ".").back();
 
-	if (utils::string::beginsWith(ext, "htm")) return "text/html";
+	if (utils::beginsWith(ext, "htm")) return "text/html";
 	if (ext == "bmp") return "image/bmp";
 	if (ext == "png") return "image/png";
 	if (ext == "jpeg" || ext == "jpg") return "image/jpeg";
@@ -46,30 +48,12 @@ std::string Http::guessMime(std::string filename)
 	return "application/octet-stream";
 }
 
-void Http::sendResponse(sockets::ClientConnection& client, HttpResponse& res)
+void Http::sendResponse(sockets::TCPConnection& client, HttpResponse& res)
 {
-	client.buffer.clear();
 	auto data = serializeHttpResponse(res);
 	size_t ptr = 0;
 
-	//If the data is small enough, just send it
-	if (data.length() <= client.buffer.getLength())
-	{
-		client.buffer.assign(data);
-		client.send(data.length());
-		return;
-	}
-
-	//Otherwise, we have to chunk it
-	while (ptr < data.length())
-	{
-		auto subdata = data.substr(ptr, client.buffer.getLength());
-		client.buffer.assign(subdata);
-		client.send(subdata.length());
-
-		client.buffer.clear();
-		ptr += client.buffer.getLength();
-	}
+	client.write(data.begin(), data.end());
 }
 
 std::ifstream Http::openFile(HttpRequest& req, std::string rootFile)
