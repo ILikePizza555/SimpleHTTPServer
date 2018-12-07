@@ -1,5 +1,5 @@
 #include "HttpServer.h"
-#include "../string_utils.h"
+#include "../StringUtils.h"
 
 #include <iostream>
 
@@ -117,7 +117,7 @@ Http::HttpResponse Http::HttpServer::httpRequestHandler(HttpRequest req) const
 		};
 
 		//Easter egg
-		if (utils::string::endsWith(req.path, "html")) utils::string::replace(rv.body, "{SERVERNAME}", SERVER_NAME);
+		if (utils::endsWith(req.path, "html")) utils::replace(rv.body, "{SERVERNAME}", SERVER_NAME);
 
 		return rv;
 	}
