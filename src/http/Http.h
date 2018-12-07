@@ -47,6 +47,6 @@ namespace Http {
 
 	METHOD getMethod(std::string str);
 
-	HttpRequest parseHttpRequest(std::string httpString);
+	HttpRequest parseHttpRequest(const std::string& httpString);
 	std::string serializeHttpResponse(HttpResponse& res);
 }

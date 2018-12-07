@@ -1,8 +1,9 @@
 #include "Http.h"
-#include "../string_utils.h"
+#include "../StringUtils.h"
 
 #include <exception>
 #include <algorithm>
+#include <sstream>
 
 Http::METHOD Http::getMethod(std::string str)
 {
@@ -15,16 +16,16 @@ Http::METHOD Http::getMethod(std::string str)
 	else if (str == "OPTIONS") return OPTIONS;
 	else if (str == "CONNECT") return CONNECT;
 	else if (str == "PATCH") return PATCH;
-	else throw MethodError(utils::string::concat({"Invalid HTTP method: ", str}));
+	else throw MethodError(utils::concat({"Invalid HTTP method: ", str}));
 }
 
-Http::HttpRequest Http::parseHttpRequest(std::string httpString)
+Http::HttpRequest Http::parseHttpRequest(const std::string& httpString)
 {
-	auto lines = utils::string::split(httpString, CRLF);
+	auto lines = utils::split(httpString, CRLF);
 	HttpRequest rv;
 
 	//Parse the request line (method, url, and version)
-	auto request = utils::string::split(lines[0], " ");
+	auto request = utils::split(lines[0], " ");
 
 	rv.method = getMethod(request[0]);
 	rv.path = request[1];
@@ -36,7 +37,7 @@ Http::HttpRequest Http::parseHttpRequest(std::string httpString)
 		//Need to ensure that the version string is valid
 		if (rv.version != "HTTP/1.1" && rv.version != "HTTP/1.0")
 		{
-			throw RequestError(utils::string::concat({"Supplied version \"", rv.version, "\" is not a valid HTTP version."}));
+			throw RequestError(utils::concat({"Supplied version \"", rv.version, "\" is not a valid HTTP version."}));
 		}
 	}
 	else
@@ -48,16 +49,16 @@ Http::HttpRequest Http::parseHttpRequest(std::string httpString)
 	if (lines.size() > 1)
 	{
 		//Parse the headers
-		int header_end = std::find_if(lines.begin() + 1, lines.end(), [](std::string& s) { return s.empty(); }) - lines.begin();
+		ssize_t header_end = std::find_if(lines.begin() + 1, lines.end(), [](std::string& s) { return s.empty(); }) - lines.begin();
 		for (int i = 1; i < header_end; i++)
 		{
-			auto line = utils::string::split(lines[i], ":", 1);
-			utils::string::trim(line[0]);
-			utils::string::trim(line[1]);
+			auto line = utils::split(lines[i], ":", 1);
+			utils::trim(line[0]);
+			utils::trim(line[1]);
 			rv.headers.insert(std::make_pair(line[0], line[1]));
 		}
 
-		rv.body = utils::string::concat(lines, "", header_end);
+		rv.body = utils::concat(lines, "", header_end);
 	}
 
 	return rv;
