@@ -5,7 +5,6 @@
 #include <map>
 #include <string>
 
-#define SERVER_NAME "SHS/0.9 - Rainbow Dash"
 #define CRLF "\r\n"
 
 #define HTTP_VERSION "HTTP/1.1"

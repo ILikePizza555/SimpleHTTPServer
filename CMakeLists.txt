@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.10)
 
 project(SimpleHTTPServer)
 
+set(VERSION 1.0)
+add_compile_definitions(SERVER_NAME="SHS/${VERSION} - Rainbow Dash")
+
 # Define the sources for SimpleHTTPServer
 set(HTTP_SOURCES src/http/Http.cpp src/http/HttpServer.cpp src/http/HttpUtils.cpp src/http/HttpError.cpp)
 
