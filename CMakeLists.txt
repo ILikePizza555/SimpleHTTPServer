@@ -8,7 +8,7 @@ set(HTTP_SOURCES src/http/Http.cpp src/http/HttpServer.cpp src/http/HttpUtils.cp
 add_executable(shs src/main.cpp src/string_utils.cpp ${HTTP_SOURCES})
 
 # Include sockets.cpp into the project
-set(SOCKETSCPP_VERSION "v1.0.1")
+set(SOCKETSCPP_VERSION "v1.1")
 set(SOCKETSCPP_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/sockets.cpp-${SOCKETSCPP_VERSION})
 include(ExternalProject)
 ExternalProject_Add(socketscpp
