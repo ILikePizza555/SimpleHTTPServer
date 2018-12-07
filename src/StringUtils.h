@@ -1,12 +1,9 @@
 #pragma once
 
-#include <algorithm>
 #include <cctype>
-#include <functional>
 #include <initializer_list>
 #include <iterator>
 #include <string>
-#include <sstream>
 #include <vector>
 
 namespace utils
@@ -36,13 +33,13 @@ namespace utils
 		std::vector<std::string> rv;
 
 		while (count != 0) {
-
-
-			int i = string.find(delim);
+			size_t i = string.find(delim);
 			rv.push_back(string.substr(0, i));
 			string = string.substr(i);
 			count--;
 		}
+
+		return rv;
 	}
 
 }

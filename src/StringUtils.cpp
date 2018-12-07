@@ -1,12 +1,16 @@
 #include "StringUtils.h"
 
+#include <algorithm>
+#include <functional>
+#include <sstream>
+
 namespace utils
 {
 	std::vector<std::string> split(std::string string, std::string delim, int count)
 	{
 		std::vector<std::string> rv;
 
-		int n = string.find(delim);
+		size_t n = string.find(delim);
 
 		while (n != std::string::npos && count != 0) {
 			//Add the first part of the string to the vector
@@ -74,7 +78,7 @@ namespace utils
 
 	bool endsWith(std::string str, std::string end)
 	{
-		int beginIndex = str.length() - end.length();
+		size_t beginIndex = str.length() - end.length();
 		return str.substr(beginIndex, end.length()) == end;
 	}
 
