@@ -22,3 +22,7 @@ include_directories(${install_dir}/include/include)
 
 add_dependencies(shs socketscpp)
 target_link_libraries(shs ${install_dir}/lib/libsocketscpp.a)
+
+if(WIN32)
+    target_link_libraries(shs wsock32 ws2_32)
+endif()
