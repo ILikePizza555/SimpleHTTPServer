@@ -10,7 +10,7 @@ namespace Http {
 
 	HttpResponse buildError(int statusCode, std::string reason, std::string html);
 
-	std::string guessMime(std::string filename);
+	std::string guessMime(const std::string& filename);
 
 	void sendResponse(sockets::TCPConnection& client, HttpResponse& res);
 

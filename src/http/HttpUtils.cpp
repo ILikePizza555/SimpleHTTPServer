@@ -6,11 +6,11 @@
 std::string Http::defaultHtml(std::string title, std::string header, std::string message)
 {
 	return utils::concat({"<html><head><title>",
-		title,
+		std::move(title),
 		"</title><style>body{margin:2.5em auto;max-width:40.625em;line-height:1.6;font-size:18px;color:#222;padding:0 10px;background-color:#EEE;}</style></head><body><h1>",
-		header,
+		std::move(header),
 		"</h1><p>",
-		message,
+		std::move(message),
 		"</p><hr/><sup><i>",
 		SERVER_NAME,
 		"</i></sup></body></html>"});
@@ -21,7 +21,7 @@ Http::HttpResponse Http::buildError(int statusCode, std::string reason, std::str
 	HttpResponse rv{
 		HTTP_VERSION,
 		statusCode,
-		reason,
+		std::move(reason),
 		{
 			{"Content-Type", CT_HTML},
 			{"Content-Length", std::to_string(html.length())},
@@ -33,7 +33,7 @@ Http::HttpResponse Http::buildError(int statusCode, std::string reason, std::str
 	return rv;
 }
 
-std::string Http::guessMime(std::string filename)
+std::string Http::guessMime(const std::string& filename)
 {
 	auto ext = utils::split(filename, ".").back();
 
