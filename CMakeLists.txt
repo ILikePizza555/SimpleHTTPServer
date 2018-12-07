@@ -5,7 +5,7 @@ project(SimpleHTTPServer)
 # Define the sources for SimpleHTTPServer
 set(HTTP_SOURCES src/http/Http.cpp src/http/HttpServer.cpp src/http/HttpUtils.cpp src/http/HttpError.cpp)
 
-add_executable(shs src/main.cpp src/string_utils.cpp ${HTTP_SOURCES})
+add_executable(shs src/main.cpp src/StringUtils.cpp ${HTTP_SOURCES})
 
 # Include sockets.cpp into the project
 set(SOCKETSCPP_VERSION "v1.1.1")
