@@ -1,29 +1,29 @@
 #pragma once
 
-#include <iostream>
-#include <chrono>
 #include <time.h>
-#include <vector>
 #include <thread>
 #include <queue>
 #include <mutex>
-#include <fstream>
+#include <condition_variable>
+#include <tuple>
+#include <sockets/TCPServerSocket.h>
 
 #include "Http.h"
 #include "HttpUtils.h"
-#include "Sockets.h"
+
+#define HTTP_READ_AMOUNT 2560
 
 namespace Http
 {
 	class HttpServer
 	{
 	private:
-		sockets::ServerSocket server;
+		sockets::TCPServerSocket server;
 
-		int threadCount;
+		size_t threadCount;
 		std::vector<std::thread> threadpool;
 
-		std::queue<sockets::ClientConnection> clientQueue;
+		std::queue<std::tuple<sockets::TCPConnection, sockets::abl::IpAddress>> clientQueue;
 		std::mutex clientQueueMutex;
 		std::condition_variable clientQueueConditionVariable;
 
@@ -34,7 +34,7 @@ namespace Http
 		HttpResponse httpRequestHandler(HttpRequest req) const;
 
 	public:
-		HttpServer(int threadCount = 100);
+		explicit HttpServer(size_t threadCount = 100);
 
 		void start();
 		void stop();

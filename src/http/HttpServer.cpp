@@ -1,6 +1,9 @@
 #include "HttpServer.h"
+#include "../string_utils.h"
 
-Http::HttpServer::HttpServer(int threadCount) : threadCount(threadCount)
+#include <iostream>
+
+Http::HttpServer::HttpServer(size_t threadCount) : threadCount(threadCount), server("0.0.0.0", "80")
 {
 	threadpool.reserve(threadCount);
 }
@@ -27,19 +30,16 @@ void Http::HttpServer::start()
 	std::cout << "Listening for connections..." << std::endl;
 	while (!stopped)
 	{
-		server.listen();
-
 		try
 		{
-			sockets::ClientConnection client = server.accept();
-			client.buffer.clear();
+			auto client = server.acceptfrom();
 
-			//Yes, we need to get the lock even in the main thread
+			//Grab a lock for the queue to push the new connection too
 			std::lock_guard<std::mutex> lock(clientQueueMutex);
 			clientQueue.push(std::move(client));
 			clientQueueConditionVariable.notify_one();
 		}
-		catch (sockets::SocketException e)
+		catch (sockets::StringError& e)
 		{
 			std::cout << e.what() << std::endl;
 		}
@@ -55,41 +55,34 @@ void Http::HttpServer::threadNetworkHandler()
 		if (clientQueue.empty()) clientQueueConditionVariable.wait(lock);
 
 		//Explicitly move the the connection out of the queue
-		sockets::ClientConnection client = std::move(clientQueue.front());
+		sockets::TCPConnection client;
+		sockets::abl::IpAddress addr;
+		std::tie(client, addr) = std::move(clientQueue.front());
 		clientQueue.pop();
 
-		std::cout << "[" << std::this_thread::get_id() << "] handling connection for " << client.getIp() << std::endl;
+		std::cout << "[" << std::this_thread::get_id() << "] handling connection for " << addr.name() << std::endl;
 
 		//We don't need the queue anymore
 		lock.unlock();
 
-		while (!client.isClosed())
+		try
 		{
-			try
-			{
-				//Read the client data
-				client.read();
+			//Read the client data
+			auto buffer = client.read(HTTP_READ_AMOUNT);
 
-				Http::HttpRequest req = Http::parseHttpRequest(client.buffer.data());
-				Http::HttpResponse res = httpRequestHandler(req);
+			Http::HttpRequest req = Http::parseHttpRequest(std::string(buffer.begin(), buffer.end()));
+			Http::HttpResponse res = httpRequestHandler(req);
 
-				Http::sendResponse(client, res);
-			}
-			catch (Http::RequestError e)
-			{
-				Http::HttpResponse res = buildError(400, "Bad Request", defaultHtml("400 - Bad Request", "400 - Bad Request", e.what()));
-				Http::sendResponse(client, res);
-			}
-			catch (sockets::SocketException e) {
-				std::cout << e.what() << std::endl;
-			} 
-			catch (std::exception e)
-			{
-				std::cout << "Error: " << e.what() << std::endl;
-			}
-
-			//Close the connection TODO: resposne to keep-alive
-			client.shutdown();
+			Http::sendResponse(client, res);
+		}
+		catch (Http::RequestError &e)
+		{
+			Http::HttpResponse res = buildError(400, "Bad Request", defaultHtml("400 - Bad Request", "400 - Bad Request", e.what()));
+			Http::sendResponse(client, res);
+		}
+		catch (sockets::StringError &e)
+		{
+			std::cerr << "[" << std::this_thread::get_id() << "]" << "Error: " << e.what() << std::endl;
 		}
 	}
 }
