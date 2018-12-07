@@ -98,18 +98,4 @@ namespace utils
 			count--;
 		}
 	}
-
-	std::vector<std::string> split(std::string string, const std::string &delim, int count)
-	{
-		std::vector<std::string> rv;
-
-		while (count != 0) {
-			size_t i = string.find(delim);
-			rv.push_back(string.substr(0, i));
-			string = string.substr(i);
-			count--;
-		}
-
-		return rv;
-	}
 }
