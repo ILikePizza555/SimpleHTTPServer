@@ -1,4 +1,4 @@
-A basic HTTP server written in C++.
+A simple, yet cross-platoform HTTP server written in C++.
 
 ## Building
 
