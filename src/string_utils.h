@@ -26,5 +26,18 @@ namespace utils
 		bool endsWith(std::string str, std::string end);
 
 		void replace(std::string& src, std::string sub, std::string replace, int count = -1);
+
+		std::vector<std::string> split(std::string string, const std::string& delim, int count) {
+			std::vector<std::string> rv;
+
+			while (count != 0) {
+
+
+				int i = string.find(delim);
+				rv.push_back(string.substr(0, i));
+				string = string.substr(i);
+				count--;
+			}
+		}
 	}
 }
